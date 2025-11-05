@@ -1,0 +1,174 @@
+"""
+
+GradeBook Analyzer
+Course: Programming for Problem Solving using Python
+Assignment: Mini Project
+Name: Varsha Pal
+Date: November 2025
+Assignment Title : Analyzing and Reporting Student Grades
+"""
+
+#  Task 1: Project Setup and Initialization 
+
+def display_menu():
+    print("\n========== GradeBook Analyzer ==========")
+    print("1. Enter Student Data")
+    print("2. Show Statistics")
+    print("3. Show Grades and Summary")
+    print("4. Show Pass/Fail List")
+    print("5. Display Results Table")
+    print("6. Exit")
+    print("========================================")
+
+def welcome_message():
+    print("Welcome to the GradeBook Analyzer!")
+    print("This program helps teachers analyze student grades easily.\n")
+
+#Data Entry (Input Manual)
+
+def input_student_data():
+    marks = {}
+    n = int(input("Enter number of students: "))
+    for i in range(n):
+        name = input(f"Enter name of student {i+1}: ")
+        score = float(input(f"Enter marks of {name}: "))
+        marks[name] = score
+    print("\n✅ Student data successfully recorded!\n")
+    return marks
+
+
+# Task 3: Statistical Analysis Functions 
+
+def calculate_average(marks_dict):
+    return sum(marks_dict.values()) / len(marks_dict)
+
+def calculate_median(marks_dict):
+    sorted_marks = sorted(marks_dict.values())
+    n = len(sorted_marks)
+    if n % 2 == 1:
+        return sorted_marks[n // 2]
+    else:
+        return (sorted_marks[n // 2 - 1] + sorted_marks[n // 2]) / 2
+
+def find_max_score(marks_dict):
+    max_score = max(marks_dict.values())
+    top_students = [name for name, m in marks_dict.items() if m == max_score]
+    return max_score, top_students
+
+def find_min_score(marks_dict):
+    min_score = min(marks_dict.values())
+    low_students = [name for name, m in marks_dict.items() if m == min_score]
+    return min_score, low_students
+
+def display_statistics(marks):
+    if not marks:
+        print("⚠️ No student data found! Please enter data first.")
+        return
+    avg = calculate_average(marks)
+    med = calculate_median(marks)
+    max_score, top_students = find_max_score(marks)
+    min_score, low_students = find_min_score(marks)
+
+    print("\n------ Class Statistics ------")
+    print(f"Average Marks : {avg:.2f}")
+    print(f"Median Marks  : {med:.2f}")
+    print(f"Highest Marks : {max_score:.2f} (Topper(s): {', '.join(top_students)})")
+    print(f"Lowest Marks  : {min_score:.2f} (Lowest: {', '.join(low_students)})")
+    print("------------------------------\n")
+
+#  Task 4: Grade Assignment and Distribution 
+
+def assign_grades(marks_dict):
+    grades = {}
+    for name, m in marks_dict.items():
+        if m >= 90:
+            grade = 'A'
+        elif m >= 80:
+            grade = 'B'
+        elif m >= 70:
+            grade = 'C'
+        elif m >= 60:
+            grade = 'D'
+        else:
+            grade = 'F'
+        grades[name] = grade
+    return grades
+
+def grade_distribution(grades_dict):
+    distribution = {'A':0, 'B':0, 'C':0, 'D':0, 'F':0}
+    for g in grades_dict.values():
+        distribution[g] += 1
+    return distribution
+
+def display_grade_summary(marks):
+    if not marks:
+        print("⚠️ No student data found! Please enter data first.")
+        return
+    grades = assign_grades(marks)
+    dist = grade_distribution(grades)
+
+    print("\n------ Grade Summary ------")
+    for grade, count in dist.items():
+        print(f"Grade {grade}: {count} student(s)")
+    print("----------------------------\n")
+
+
+#  Task 5: Pass/Fail Filter 
+
+def display_pass_fail(marks):
+    if not marks:
+        print("⚠️ No student data found! Please enter data first.")
+        return
+    passed_students = [name for name, m in marks.items() if m >= 40]
+    failed_students = [name for name, m in marks.items() if m < 40]
+
+    print("\n------ Pass/Fail Report ------")
+    print(f"Passed Students ({len(passed_students)}): {', '.join(passed_students) if passed_students else 'None'}")
+    print(f"Failed Students ({len(failed_students)}): {', '.join(failed_students) if failed_students else 'None'}")
+    print("------------------------------\n")
+
+
+#  Task 6: Results Table & Menu Loop 
+
+def display_results_table(marks):
+    if not marks:
+        print("⚠️ No student data found! Please enter data first.")
+        return
+    grades = assign_grades(marks)
+    print("\n------------------------------------")
+    print(f"{'Name':<15}{'Marks':<10}{'Grade':<5}")
+    print("------------------------------------")
+    for name, m in marks.items():
+        print(f"{name:<15}{m:<10.2f}{grades[name]:<5}")
+    print("------------------------------------\n")
+
+
+#  Main Program Loop 
+
+def main():
+    welcome_message()
+    marks = {}
+    while True:
+        display_menu()
+        choice = input("Enter your choice (1-6): ")
+
+        if choice == '1':
+            marks = input_student_data()
+        elif choice == '2':
+            display_statistics(marks)
+        elif choice == '3':
+            display_grade_summary(marks)
+        elif choice == '4':
+            display_pass_fail(marks)
+        elif choice == '5':
+            display_results_table(marks)
+        elif choice == '6':
+            print("Exiting GradeBook Analyzer... Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+# Run the program
+if __name__ == "__main__":
+    main()
